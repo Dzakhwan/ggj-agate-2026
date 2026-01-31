@@ -14,13 +14,15 @@ public class Movement : MonoBehaviour
     public LayerMask groundLayer;
     private Rigidbody2D rb;
     private Animator anim;
-    
+    private Vector3 respawnPoint;
+
 
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        respawnPoint = transform.position;
 
     }
 
@@ -98,6 +100,23 @@ public class Movement : MonoBehaviour
             anim.SetBool("isJumping", false);
         }
 
+    }
+
+    public void Respawn()
+    {
+        // 1. Pindahkan posisi pemain ke titik respawn
+        transform.position = respawnPoint;
+
+        // 2. Reset kecepatan (PENTING! Supaya pas respawn tidak mental karena sisa momentum)
+        rb.linearVelocity = Vector2.zero;
+
+        Debug.Log("Player Respawned!");
+    }
+
+    public void SetRespawnPoint(Vector3 newPoint)
+    {
+        respawnPoint = newPoint;
+        Debug.Log("Checkpoint Updated!");
     }
 
 
