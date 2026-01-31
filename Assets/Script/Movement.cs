@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
@@ -40,6 +41,7 @@ public class Movement : MonoBehaviour
             horizontal = 0;
         }
 
+
         // Cek jika pemain mencoba gerak ke KANAN (horizontal > 0) tapi izinnya dicabut
         if (horizontal > 0 && !AbillityManager.instance.canMoveRight)
         {
@@ -47,7 +49,7 @@ public class Movement : MonoBehaviour
         }
         // --- MODIFIKASI SELESAI ---
 
-        Vector2 currentVelocity = rb.linearVelocity; // Unity 6 uses linearVelocity
+        Vector2 currentVelocity = rb.linearVelocity;
         rb.linearVelocity = new Vector2(horizontal * speed, currentVelocity.y);
     }
 
@@ -70,4 +72,6 @@ public class Movement : MonoBehaviour
         Color rayColor = isGrounded ? Color.green : Color.red;
         Debug.DrawRay(origin, direction * groundCheckDistance, rayColor);
     }
+
+
 }
