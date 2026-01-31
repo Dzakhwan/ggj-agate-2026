@@ -7,6 +7,8 @@ public class fireballTrap : MonoBehaviour
     public float spawnInterval = 2f;
     public GameObject fireballInstance;
 
+    public Vector3 fireballRotation = Vector3.zero;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -19,7 +21,7 @@ public class fireballTrap : MonoBehaviour
     void SpawnFireball()
     {
 
-        fireballInstance = Instantiate(fireballPrefab, transform.position, Quaternion.identity);
+        fireballInstance = Instantiate(fireballPrefab, transform.position, Quaternion.Euler(fireballRotation));
 
 
         StartCoroutine(DestroyFireball(fireballInstance, 1f));
