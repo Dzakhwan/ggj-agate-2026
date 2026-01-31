@@ -4,8 +4,10 @@ using UnityEngine;
 public class fireballTrap : MonoBehaviour
 {
     public GameObject fireballPrefab;
-    public float spawnInterval = 2f;
+    public float spawnInterval;
     public GameObject fireballInstance;
+    public float duration;
+    public float delay;
 
     public Vector3 fireballRotation = Vector3.zero;
 
@@ -14,7 +16,7 @@ public class fireballTrap : MonoBehaviour
     void Start()
     {
 
-        InvokeRepeating("SpawnFireball", 0f, spawnInterval);
+        InvokeRepeating("SpawnFireball", delay, spawnInterval);
     }
 
     // Update is called once per frame
@@ -24,7 +26,7 @@ public class fireballTrap : MonoBehaviour
         fireballInstance = Instantiate(fireballPrefab, transform.position, Quaternion.Euler(fireballRotation));
 
 
-        StartCoroutine(DestroyFireball(fireballInstance, 1f));
+        StartCoroutine(DestroyFireball(fireballInstance, duration));
     }
 
     IEnumerator DestroyFireball(GameObject fireball, float delay)
