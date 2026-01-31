@@ -13,10 +13,15 @@ public class Movement : MonoBehaviour
     private float groundCheckDistance = 0.2f;
     public LayerMask groundLayer;
     private Rigidbody2D rb;
+    private Animator anim;
+    
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+
     }
 
     void FixedUpdate()
@@ -51,6 +56,19 @@ public class Movement : MonoBehaviour
 
         Vector2 currentVelocity = rb.linearVelocity;
         rb.linearVelocity = new Vector2(horizontal * speed, currentVelocity.y);
+
+        anim.SetFloat("Speed", Mathf.Abs(horizontal));
+
+        if (horizontal != 0)
+        {
+            transform.localScale = new Vector3(
+                Mathf.Sign(horizontal),
+                1,
+                1
+            );
+        }
+
+
     }
 
     void Jump()
@@ -59,6 +77,7 @@ public class Movement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && AbillityManager.instance.canJump)
         {
             rb.AddForce(new Vector2(0.0f, jumpForce), ForceMode2D.Impulse);
+            anim.SetBool("isJumping", true);
             Debug.Log("Jump");
         }
     }
@@ -71,6 +90,14 @@ public class Movement : MonoBehaviour
         isGrounded = hit.collider != null;
         Color rayColor = isGrounded ? Color.green : Color.red;
         Debug.DrawRay(origin, direction * groundCheckDistance, rayColor);
+
+        anim.SetBool("isGrounded", isGrounded);
+
+        if (isGrounded)
+        {
+            anim.SetBool("isJumping", false);
+        }
+
     }
 
 
