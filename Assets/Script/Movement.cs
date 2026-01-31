@@ -9,12 +9,14 @@ public class Movement : MonoBehaviour
     private float jumpForce = 5.0f;
     private float vertical, horizontal;
     public bool isGrounded = false;
+    public bool isCeiling = false; // Status di ceiling
     [SerializeField]
     private float groundCheckDistance = 0.2f;
     public LayerMask groundLayer;
     private Rigidbody2D rb;
     private Animator anim;
     private Vector3 respawnPoint;
+    private bool ceilingMode = false; // Mode berjalan di ceiling
 
 
 
@@ -34,7 +36,9 @@ public class Movement : MonoBehaviour
     void Update()
     {
         CheckGround();
+        CheckCeiling();
         Jump();
+        HandleCeilingMode();
     }
 
     void MovementPlayer()
@@ -47,7 +51,6 @@ public class Movement : MonoBehaviour
         {
             horizontal = 0;
         }
-
 
         // Cek jika pemain mencoba gerak ke KANAN (horizontal > 0) tapi izinnya dicabut
         if (horizontal > 0 && !AbillityManager.instance.canMoveRight)
@@ -69,8 +72,6 @@ public class Movement : MonoBehaviour
                 1
             );
         }
-
-
     }
 
     void Jump()
@@ -100,6 +101,43 @@ public class Movement : MonoBehaviour
             anim.SetBool("isJumping", false);
         }
 
+    }
+
+    void CheckCeiling()
+    {
+        Vector2 origin = (Vector2)transform.position + Vector2.up * 0.1f;
+        Vector2 direction = Vector2.up;
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction, groundCheckDistance, groundLayer);
+        isCeiling = hit.collider != null;
+        Color rayColor = isCeiling ? Color.yellow : Color.gray;
+        Debug.DrawRay(origin, direction * groundCheckDistance, rayColor);
+    }
+
+    void HandleCeilingMode()
+    {
+        // Tekan C untuk toggle ceiling mode
+        if (Input.GetKeyDown(KeyCode.C) && isCeiling)
+        {
+            ceilingMode = !ceilingMode;
+        }
+
+        // Jika tidak ada ceiling di atas, keluar dari ceiling mode
+        if (!isCeiling)
+        {
+            ceilingMode = false;
+        }
+
+        // Update gravity berdasarkan mode
+        if (ceilingMode)
+        {
+            // Mode ceiling: gravity dibalik agar menempel ke atas
+            rb.gravityScale = -1f;
+        }
+        else
+        {
+            // Mode normal: gravity biasa
+            rb.gravityScale = 1f;
+        }
     }
 
     public void Respawn()

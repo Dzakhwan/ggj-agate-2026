@@ -10,6 +10,10 @@ public class AbillityManager : MonoBehaviour
     public bool canMoveRight = true;
     public bool canJump = true;
 
+    [Header("Platform Movement")]
+    public float movementDistance = 2f; // Jarak gerak platform
+    public float movementDuration = 0.5f; // Durasi animasi gerak
+
     [Header("Referensi UI")]
     // Drag tombol UI kamu ke sini di Inspector
     public Button btnLeft;
@@ -141,5 +145,58 @@ public class AbillityManager : MonoBehaviour
         Color color = btn.image.color;
         color.a = alpha;
         btn.image.color = color;
+    }
+
+    // Menggerakkan semua platform ke arah tertentu
+    public void MovePlatforms(string direction)
+    {
+        Collider2D[] allColliders = FindObjectsByType<Collider2D>(FindObjectsSortMode.None);
+
+        foreach (Collider2D collider in allColliders)
+        {
+            // Cek apakah object memiliki tag "Platform"
+            if (collider.CompareTag("Move Platform"))
+            {
+                MovePlatform(collider.gameObject, direction);
+            }
+        }
+    }
+
+    // Menggerakkan platform individual
+    public void MovePlatform(GameObject platform, string direction)
+    {
+        Vector3 targetPosition = platform.transform.position;
+
+        switch (direction)
+        {
+            case "Left":
+                targetPosition.x -= movementDistance;
+                break;
+            case "Right":
+                targetPosition.x += movementDistance;
+                break;
+            case "Jump":
+                targetPosition.y += movementDistance;
+                break;
+        }
+
+        // Animasi pergerakan (lerp)
+        StartCoroutine(MovePlatformCoroutine(platform.transform, targetPosition, movementDuration));
+    }
+
+    private System.Collections.IEnumerator MovePlatformCoroutine(Transform platform, Vector3 targetPos, float duration)
+    {
+        Vector3 startPos = platform.position;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            platform.position = Vector3.Lerp(startPos, targetPos, t);
+            yield return null;
+        }
+
+        platform.position = targetPos;
     }
 }
