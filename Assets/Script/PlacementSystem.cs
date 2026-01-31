@@ -66,6 +66,12 @@ public class PlacementSystem : MonoBehaviour
         AbilityBlock blockScript = objectToPlace.AddComponent<AbilityBlock>();
         blockScript.abilityType = selectedAbilityType;
 
+        // 2.1 Register objek yang ditempatkan ke AbillityManager
+        if (AbillityManager.instance != null)
+        {
+            AbillityManager.instance.RegisterPlacedObject(selectedAbilityType, objectToPlace);
+        }
+
         // 3. Matikan Skill di AbilityManager
         if (selectedAbilityType == "Left") AbillityManager.instance.canMoveLeft = false;
         else if (selectedAbilityType == "Right") AbillityManager.instance.canMoveRight = false;
