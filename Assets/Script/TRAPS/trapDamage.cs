@@ -2,19 +2,26 @@ using UnityEngine;
 
 public class trapDamage : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private Movement playerMovement;
+
     void Start()
     {
-
+        // Ambil referensi script Movement yang ada di object Player ini
+        playerMovement = GetComponent<Movement>();
     }
 
-    // Update is called once per frame
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Trap")
+        // Cek jika menabrak objek dengan Tag "Trap"
+        if (collision.gameObject.CompareTag("Trap"))
         {
             Debug.Log("Player Hit Trap");
-            Destroy(gameObject);
+
+            // Panggil fungsi Respawn alih-alih Destroy
+            if (playerMovement != null)
+            {
+                playerMovement.Respawn();
+            }
         }
     }
 }
