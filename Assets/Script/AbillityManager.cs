@@ -29,6 +29,10 @@ public class AbillityManager : MonoBehaviour
     private GameObject lastPlaced;
     private string lastPlacedType;
 
+    // Dictionary untuk menyimpan platform yang terhubung dengan setiap ability
+    private System.Collections.Generic.Dictionary<GameObject, GameObject[]> abilityPlatforms =
+        new System.Collections.Generic.Dictionary<GameObject, GameObject[]>();
+
     void Awake()
     {
         // Singleton pattern sederhana
@@ -56,6 +60,13 @@ public class AbillityManager : MonoBehaviour
         lastPlacedType = type;
     }
 
+    // Register platform mana saja yang terhubung dengan ability block tertentu
+    // Dipanggil dari AbilityBlock saat detect platform
+    public void RegisterAbilityPlatforms(GameObject abilityBlock, GameObject[] platforms)
+    {
+        abilityPlatforms[abilityBlock] = platforms;
+    }
+
     // Mengembalikan objek yang sudah ditempatkan (dipanggil dari UI, Shift, atau AbilityBlock)
     public void ReturnPlacedObject(string type)
     {
@@ -67,6 +78,12 @@ public class AbillityManager : MonoBehaviour
         if (target == null) return;
 
         Destroy(target);
+
+        // Hapus referensi platform yang terdaftar
+        if (abilityPlatforms.ContainsKey(target))
+        {
+            abilityPlatforms.Remove(target);
+        }
 
         if (type == "Left")
         {
@@ -147,17 +164,28 @@ public class AbillityManager : MonoBehaviour
         btn.image.color = color;
     }
 
-    // Menggerakkan semua platform ke arah tertentu
-    public void MovePlatforms(string direction)
+    // Menggerakkan hanya platform yang terdaftar dengan ability block tertentu
+    public void MovePlatforms(string direction, string type)
     {
-        Collider2D[] allColliders = FindObjectsByType<Collider2D>(FindObjectsSortMode.None);
+        GameObject abilityBlock = null;
 
-        foreach (Collider2D collider in allColliders)
+        // Dapatkan ability block yang ditempatkan berdasarkan type
+        if (type == "Left") abilityBlock = placedLeft;
+        else if (type == "Right") abilityBlock = placedRight;
+        else if (type == "Jump") abilityBlock = placedJump;
+
+        if (abilityBlock == null) return;
+
+        // Cek apakah ada platform yang terdaftar untuk ability block ini
+        if (abilityPlatforms.ContainsKey(abilityBlock))
         {
-            // Cek apakah object memiliki tag "Platform"
-            if (collider.CompareTag("Move Platform"))
+            GameObject[] platforms = abilityPlatforms[abilityBlock];
+            foreach (GameObject platform in platforms)
             {
-                MovePlatform(collider.gameObject, direction);
+                if (platform != null)
+                {
+                    MovePlatform(platform, direction);
+                }
             }
         }
     }
@@ -180,7 +208,7 @@ public class AbillityManager : MonoBehaviour
                 break;
         }
 
-        // Animasi pergerakan (lerp)
+
         StartCoroutine(MovePlatformCoroutine(platform.transform, targetPosition, movementDuration));
     }
 

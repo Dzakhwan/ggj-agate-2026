@@ -4,6 +4,50 @@ public class AbilityBlock : MonoBehaviour
 {
     public string abilityType; // "Left", "Right", atau "Jump"
 
+    void Start()
+    {
+        // Cari semua platform yang overlap dengan ability block ini
+        DetectPlatformsInWorld();
+    }
+
+    void DetectPlatformsInWorld()
+    {
+        // Dapatkan collider dari ability block
+        Collider2D abilityCollider = GetComponent<Collider2D>();
+        if (abilityCollider == null)
+        {
+            Debug.LogWarning("AbilityBlock tidak memiliki Collider2D!");
+            return;
+        }
+
+        // Cari semua collider yang overlap dengan ability block ini
+        Collider2D[] overlappingColliders = new Collider2D[10];
+        int count = abilityCollider.Overlap(new ContactFilter2D(), overlappingColliders);
+
+        // Kumpulkan platform yang terdeteksi
+        System.Collections.Generic.List<GameObject> detectedPlatforms =
+            new System.Collections.Generic.List<GameObject>();
+
+        for (int i = 0; i < count; i++)
+        {
+            if (overlappingColliders[i].CompareTag("Move Platform"))
+            {
+                detectedPlatforms.Add(overlappingColliders[i].gameObject);
+                Debug.Log($"Ability {abilityType} mendeteksi platform: {overlappingColliders[i].gameObject.name}");
+            }
+        }
+
+        // Daftarkan platform yang terdeteksi ke AbillityManager
+        if (detectedPlatforms.Count > 0 && AbillityManager.instance != null)
+        {
+            AbillityManager.instance.RegisterAbilityPlatforms(gameObject, detectedPlatforms.ToArray());
+        }
+        else
+        {
+            Debug.LogWarning($"Ability {abilityType} tidak mendeteksi platform apapun!");
+        }
+    }
+
     // Cara ambil kembali: KLIK KANAN pada balok
     void OnMouseOver()
     {
@@ -33,10 +77,10 @@ public class AbilityBlock : MonoBehaviour
 
     void ActivateAbility()
     {
-        // Menggerakkan semua platform sesuai arah ability
+        // Menggerakkan hanya platform yang terdeteksi/terhubung dengan ability ini
         if (AbillityManager.instance != null)
         {
-            AbillityManager.instance.MovePlatforms(abilityType);
+            AbillityManager.instance.MovePlatforms(abilityType, abilityType);
         }
     }
 }

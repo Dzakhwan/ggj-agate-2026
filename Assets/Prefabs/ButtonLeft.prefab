@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4451993878120498291}
   - component: {fileID: 8602642518915375868}
   - component: {fileID: 3848781075816096445}
+  - component: {fileID: 3035752811017106922}
   m_Layer: 3
   m_Name: ButtonLeft
   m_TagString: Platform
@@ -137,3 +138,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &3035752811017106922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813582390760948440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5552c82cd8567cb4eaad28535fd56e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBlock
+  abilityType: Left
+  platformsToMove:
+  - {fileID: 0}
