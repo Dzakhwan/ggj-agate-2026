@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class fireball : MonoBehaviour
@@ -16,4 +17,15 @@ public class fireball : MonoBehaviour
     {
         transform.Translate(direction * speed * Time.deltaTime);
     }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Platform")
+        {
+            Debug.Log("Fireball Hit Platform");
+            Destroy(gameObject);
+        }
+    }
+
+
 }
