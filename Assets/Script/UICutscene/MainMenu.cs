@@ -1,5 +1,5 @@
 using UnityEngine;
-using Unity.UI;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
