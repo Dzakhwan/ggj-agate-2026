@@ -12,8 +12,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Cutscene.unity
     guid: 34cf82ef3ecd2ab4cadd782b513932f8
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Scenes/Lvl1.unity
+    guid: 54dea16705999064a8b94739d24c0ff0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
